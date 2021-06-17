@@ -27,8 +27,12 @@ class SongModel {
     ];
   }
 
-  static allSongsMapDBToModel({ id, title, performer }) {
+  static mapDBToModel4AllSongs({ id, title, performer }) {
     return { id, title, performer };
+  }
+
+  static mapDBToModel4SingleSong(dbObject) {
+    return { ...dbObject, createdAt: dbObject.created_at, updatedAt: dbObject.updated_at };
   }
 }
 

@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
-// const NotFoundError = require('../../exceptions/NotFoundError');
+const NotFoundError = require('../../exceptions/NotFoundError');
+const { mapDBToModel4SingleSong: MapDBToModel4singleSong } = require('../../utils/model');
 const SongModel = require('../../utils/model');
 
 class CrudService {
@@ -26,22 +27,22 @@ class CrudService {
 
   async getSongs() {
     const result = await this._pool.query('SELECT * FROM songs');
-    return result.rows.map(SongModel.allSongsMapDBToModel);
+    return result.rows.map(SongModel.mapDBToModel4AllSongs);
   }
 
-  //   async getNoteById(id) {
-  //     const query = {
-  //       text: 'SELECT * FROM notes WHERE id = $1',
-  //       values: [id],
-  //     };
-  //     const result = await this._pool.query(query);
+  async getSongById(id) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
 
-  //     if (!result.rows.length) {
-  //       throw new NotFoundError('Catatan tidak ditemukan');
-  //     }
+    if (!result.rows.length) {
+      throw new NotFoundError('Lagu yang Anda cari tidak ditemukan');
+    }
 
-  //     return result.rows.map(mapDBToModel)[0];
-  //   }
+    return result.rows.map(MapDBToModel4singleSong)[0];
+  }
 
   //   async editNoteById(id, { title, body, tags }) {
   //     const updatedAt = new Date().toISOString();

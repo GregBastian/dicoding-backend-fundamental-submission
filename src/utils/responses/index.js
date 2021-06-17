@@ -1,25 +1,26 @@
-const successResponse = ({ responseMessage = '', responseData = {}, withMessage = true }) => {
-  if (withMessage) {
-    return {
-      status: 'success',
-      message: responseMessage,
-      data: responseData,
-    };
-  }
-  return {
+const successResponse = (h, {
+  withMessage = false, responseMessage = '', responseData = {}, responseCode = 200,
+}) => {
+  const response = {
     status: 'success',
     data: responseData,
   };
+  if (withMessage) {
+    response.message = responseMessage;
+  }
+  return h.response(response).code(responseCode);
 };
 
-const failResponse = ({ responseMessage = 'Terjadi kesalahan di sisi client' }) => ({
-  status: 'fail',
-  message: responseMessage,
-});
+const failResponse = (h, error) => (
+  h.response({
+    status: 'fail',
+    message: error.message,
+  }).code(error.statusCode));
 
-const errorResponse = ({ responseMessage = 'Terjadi kesalahan di sisi server' }) => ({
-  status: 'error',
-  message: responseMessage,
-});
+const errorResponse = (h) => (
+  h.response({
+    status: 'error',
+    message: 'Terjadi kesalahan di sisi server',
+  }).code(500));
 
 module.exports = { successResponse, failResponse, errorResponse };

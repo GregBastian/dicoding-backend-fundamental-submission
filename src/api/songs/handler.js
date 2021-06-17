@@ -1,5 +1,5 @@
 const ClientError = require('../../exceptions/ClientError');
-const { successResponse } = require('../../utils/responses');
+const { successResponse, failResponse, errorResponse } = require('../../utils/responses');
 
 class SongsHandler {
   constructor(service, validator) {
@@ -20,71 +20,43 @@ class SongsHandler {
 
       const newSongId = await this._service.addSong(request.payload);
 
-      const response = h.response(successResponse({
+      return successResponse(h, {
+        withMessage: true,
         responseMessage: 'Lagu berhasil ditambahkan',
         responseData: { songId: newSongId },
-      }));
-      response.code(201);
-      return response;
+        responseCode: 201,
+      });
     } catch (error) {
       if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
+        return failResponse(h, error);
       }
 
-      // Server ERROR!
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      console.log(error);
+      return errorResponse();
     }
   }
 
-  async getSongsHandler() {
+  async getSongsHandler(request, h) {
     const retrievedSongs = await this._service.getSongs();
-    return successResponse({
+    return successResponse(h, {
       responseData: { songs: retrievedSongs },
-      responseWithMessage: false,
     });
   }
 
-  // async getNoteByIdHandler(request, h) {
-  //   try {
-  //     const { id } = request.params;
-  //     const note = await this._service.getNoteById(id);
-  //     return {
-  //       status: 'success',
-  //       data: {
-  //         note,
-  //       },
-  //     };
-  //   } catch (error) {
-  //     if (error instanceof ClientError) {
-  //       const response = h.response({
-  //         status: 'fail',
-  //         message: error.message,
-  //       });
-  //       response.code(error.statusCode);
-  //       return response;
-  //     }
+  async getSongByIdHandler(request, h) {
+    try {
+      const { id } = request.params;
+      const retrievedSong = await this._service.getSongById(id);
+      return successResponse({ responseData: retrievedSong });
+    } catch (error) {
+      if (error instanceof ClientError) {
+        return failResponse(h, error);
+      }
 
-  //     // Server ERROR!
-  //     const response = h.response({
-  //       status: 'error',
-  //       message: 'Maaf, terjadi kegagalan pada server kami.',
-  //     });
-  //     response.code(500);
-  //     console.error(error);
-  //     return response;
-  //   }
-  // }
+      console.log(error);
+      return errorResponse();
+    }
+  }
 
   // async putNoteByIdHandler(request, h) {
   //   try {
@@ -150,17 +122,10 @@ class SongsHandler {
   async truncateTableHandler(request, h) {
     try {
       await this._service.truncateTable();
-      const response = h.response(successResponse({ responseMessage: 'Tabel berhasil di truncate' }));
-      response.code(200);
-      return response;
+      return successResponse(h, { withMessage: true, responseMessage: 'Tabel berhasil di truncate' });
     } catch (error) {
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      console.log(error);
+      return errorResponse();
     }
   }
 }
