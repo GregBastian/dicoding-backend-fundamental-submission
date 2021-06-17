@@ -8,7 +8,7 @@ class SongsHandler {
 
     this.postSongHandler = this.postSongHandler.bind(this);
     this.getSongsHandler = this.getSongsHandler.bind(this);
-    // this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
+    this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
     // this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
     // this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
     this.truncateTableHandler = this.truncateTableHandler.bind(this);
@@ -47,7 +47,9 @@ class SongsHandler {
     try {
       const { id } = request.params;
       const retrievedSong = await this._service.getSongById(id);
-      return successResponse({ responseData: retrievedSong });
+      return successResponse(h, {
+        responseData: { song: retrievedSong },
+      });
     } catch (error) {
       if (error instanceof ClientError) {
         return failResponse(h, error);
@@ -58,9 +60,9 @@ class SongsHandler {
     }
   }
 
-  // async putNoteByIdHandler(request, h) {
+  // async putSongByIdHandler(request, h) {
   //   try {
-  //     this._validator.validateNotePayload(request.payload);
+  //     this._validators.validateNotePayload(request.payload);
   //     const { id } = request.params;
 
   //     await this._service.editNoteById(id, request.payload);

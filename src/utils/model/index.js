@@ -32,7 +32,10 @@ class SongModel {
   }
 
   static mapDBToModel4SingleSong(dbObject) {
-    return { ...dbObject, createdAt: dbObject.created_at, updatedAt: dbObject.updated_at };
+    const model = { ...dbObject, insertedAt: dbObject.inserted_at, updatedAt: dbObject.updated_at };
+    delete model.inserted_at;
+    delete model.updated_at;
+    return model;
   }
 }
 

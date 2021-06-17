@@ -6,7 +6,7 @@
   "scripts": {
     "start-prod": "NODE_ENV=production node ./src/server.js",
     "start-dev": "nodemon ./src/server.js",
-    "lint": "eslint ./src --fix",
+    "lint": "eslint ./src --fix && eslint ./migrations --fix",
     "migrate": "node-pg-migrate"
   },
   "keywords": [],
