@@ -26,8 +26,8 @@ class CrudService {
   }
 
   async getSongs() {
-    const result = await this._pool.query('SELECT * FROM songs');
-    return result.rows.map(SongModel.mapDBToModel4AllSongs);
+    const result = await this._pool.query('SELECT id, title, performer FROM songs');
+    return result.rows;
   }
 
   async getSongById(id) {

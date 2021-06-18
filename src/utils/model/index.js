@@ -45,10 +45,6 @@ class SongModel {
     ];
   }
 
-  static mapDBToModel4AllSongs({ id, title, performer }) {
-    return { id, title, performer };
-  }
-
   static mapDBToModel4SingleSong(dbObject) {
     const model = { ...dbObject, insertedAt: dbObject.inserted_at, updatedAt: dbObject.updated_at };
     delete model.inserted_at;
