@@ -10,7 +10,7 @@ class SongsHandler {
     this.getSongsHandler = this.getSongsHandler.bind(this);
     this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
     this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
-    // this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
+    this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
     this.truncateTableHandler = this.truncateTableHandler.bind(this);
   }
 
@@ -79,45 +79,37 @@ class SongsHandler {
         return failResponse(h, error);
       }
 
-      // Server ERROR!
       console.log(error);
       return errorResponse(h);
     }
   }
 
-  // async deleteNoteByIdHandler(request, h) {
-  //   try {
-  //     const { id } = request.params;
-  //     await this._service.deleteNoteById(id);
+  async deleteSongByIdHandler(request, h) {
+    try {
+      const { id } = request.params;
+      await this._service.deleteSongById(id);
 
-  //     return {
-  //       status: 'success',
-  //       message: 'Catatan berhasil dihapus',
-  //     };
-  //   } catch (error) {
-  //     if (error instanceof ClientError) {
-  //       const response = h.response({
-  //         status: 'fail',
-  //         message: error.message,
-  //       });
-  //       response.code(error.statusCode);
-  //       return response;
-  //     }
+      return successResponse(h, {
+        withMessage: true,
+        responseMessage: 'lagu berhasil dihapus',
+      });
+    } catch (error) {
+      if (error instanceof ClientError) {
+        return failResponse(h, error);
+      }
 
-  //     // Server ERROR!
-  //     const response = h.response({
-  //       status: 'error',
-  //       message: 'Maaf, terjadi kegagalan pada server kami.',
-  //     });
-  //     response.code(500);
-  //     console.error(error);
-  //     return response;
-  //   }
-  // }
+      // Server ERROR!
+      return errorResponse(h);
+    }
+  }
+
   async truncateTableHandler(request, h) {
     try {
       await this._service.truncateTable();
-      return successResponse(h, { withMessage: true, responseMessage: 'Tabel berhasil di truncate' });
+      return successResponse(h, { 
+        withMessage: true, 
+        responseMessage: 'Tabel berhasil di truncate' 
+      });
     } catch (error) {
       console.log(error);
       return errorResponse();
