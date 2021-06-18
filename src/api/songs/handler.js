@@ -38,11 +38,16 @@ class SongsHandler {
   }
 
   async getSongsHandler(request, h) {
-    const retrievedSongs = await this._service.getSongs();
-    return successResponse(h, {
-      withData: true,
-      responseData: { songs: retrievedSongs },
-    });
+    try {
+      const retrievedSongs = await this._service.getSongs();
+      return successResponse(h, {
+        withData: true,
+        responseData: { songs: retrievedSongs },
+      });
+    } catch (error) {
+      console.log(error);
+      return errorResponse(h);
+    }
   }
 
   async getSongByIdHandler(request, h) {
@@ -106,9 +111,9 @@ class SongsHandler {
   async truncateTableHandler(request, h) {
     try {
       await this._service.truncateTable();
-      return successResponse(h, { 
-        withMessage: true, 
-        responseMessage: 'Tabel berhasil di truncate' 
+      return successResponse(h, {
+        withMessage: true,
+        responseMessage: 'Tabel berhasil di truncate',
       });
     } catch (error) {
       console.log(error);
