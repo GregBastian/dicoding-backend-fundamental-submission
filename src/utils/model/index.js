@@ -2,7 +2,7 @@ const { nanoid } = require('nanoid');
 
 class SongModel {
   constructor(entry) {
-    this.id = nanoid(10);
+    this.id = `song-${nanoid(10)}`;
     this.title = entry.title;
     this.year = entry.year;
     this.performer = entry.performer;
