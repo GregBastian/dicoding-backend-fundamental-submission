@@ -14,7 +14,13 @@ class SongModel {
     this.updatedAt = currentTime;
   }
 
-  instanceToArray() {
+  static instance4ExistingEntry(id, entry) {
+    const existingModel = new SongModel(entry);
+    existingModel.id = id;
+    return existingModel;
+  }
+
+  instanceToArray4NewEntry() {
     return [
       this.id,
       this.title,
@@ -24,6 +30,18 @@ class SongModel {
       this.duration,
       this.insertedAt,
       this.updatedAt,
+    ];
+  }
+
+  instanceToArray4ExistingEntry() {
+    return [
+      this.title,
+      this.year,
+      this.performer,
+      this.genre,
+      this.duration,
+      this.updatedAt,
+      this.id,
     ];
   }
 

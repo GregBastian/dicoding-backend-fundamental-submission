@@ -9,7 +9,7 @@ class SongsHandler {
     this.postSongHandler = this.postSongHandler.bind(this);
     this.getSongsHandler = this.getSongsHandler.bind(this);
     this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
-    // this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
+    this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
     // this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
     this.truncateTableHandler = this.truncateTableHandler.bind(this);
   }
@@ -22,6 +22,7 @@ class SongsHandler {
 
       return successResponse(h, {
         withMessage: true,
+        withData: true,
         responseMessage: 'Lagu berhasil ditambahkan',
         responseData: { songId: newSongId },
         responseCode: 201,
@@ -32,13 +33,14 @@ class SongsHandler {
       }
 
       console.log(error);
-      return errorResponse();
+      return errorResponse(h);
     }
   }
 
   async getSongsHandler(request, h) {
     const retrievedSongs = await this._service.getSongs();
     return successResponse(h, {
+      withData: true,
       responseData: { songs: retrievedSongs },
     });
   }
@@ -48,6 +50,7 @@ class SongsHandler {
       const { id } = request.params;
       const retrievedSong = await this._service.getSongById(id);
       return successResponse(h, {
+        withData: true,
         responseData: { song: retrievedSong },
       });
     } catch (error) {
@@ -56,41 +59,31 @@ class SongsHandler {
       }
 
       console.log(error);
-      return errorResponse();
+      return errorResponse(h);
     }
   }
 
-  // async putSongByIdHandler(request, h) {
-  //   try {
-  //     this._validators.validateNotePayload(request.payload);
-  //     const { id } = request.params;
+  async putSongByIdHandler(request, h) {
+    try {
+      this._validator.validateSongPayload(request.payload);
+      const { id } = request.params;
 
-  //     await this._service.editNoteById(id, request.payload);
+      await this._service.editSongById(id, request.payload);
 
-  //     return {
-  //       status: 'success',
-  //       message: 'Catatan berhasil diperbarui',
-  //     };
-  //   } catch (error) {
-  //     if (error instanceof ClientError) {
-  //       const response = h.response({
-  //         status: 'fail',
-  //         message: error.message,
-  //       });
-  //       response.code(error.statusCode);
-  //       return response;
-  //     }
+      return successResponse(h, {
+        withMessage: true,
+        responseMessage: 'lagu berhasil diperbarui',
+      });
+    } catch (error) {
+      if (error instanceof ClientError) {
+        return failResponse(h, error);
+      }
 
-  //     // Server ERROR!
-  //     const response = h.response({
-  //       status: 'error',
-  //       message: 'Maaf, terjadi kegagalan pada server kami.',
-  //     });
-  //     response.code(500);
-  //     console.error(error);
-  //     return response;
-  //   }
-  // }
+      // Server ERROR!
+      console.log(error);
+      return errorResponse(h);
+    }
+  }
 
   // async deleteNoteByIdHandler(request, h) {
   //   try {

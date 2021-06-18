@@ -13,7 +13,7 @@ class CrudService {
     const newSong = new SongModel(payload);
     const query = {
       text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
-      values: newSong.instanceToArray(newSong),
+      values: newSong.instanceToArray4NewEntry(newSong),
     };
 
     const result = await this._pool.query(query);
@@ -44,20 +44,19 @@ class CrudService {
     return result.rows.map(MapDBToModel4singleSong)[0];
   }
 
-  //   async editNoteById(id, { title, body, tags }) {
-  //     const updatedAt = new Date().toISOString();
-  //     const query = {
-  //       text: 'UPDATE notes SET title = $1, body = $2,
-  //   tags = $3, updated_at = $4 WHERE id = $5 RETURNING id',
-  //       values: [title, body, tags, updatedAt, id],
-  //     };
+  async editSongById(id, payload) {
+    const newSongData = SongModel.instance4ExistingEntry(id, payload);
+    const query = {
+      text: 'UPDATE songs SET title = $1, year = $2, performer = $3, genre = $4, duration = $5, updated_at = $6 WHERE id = $7 RETURNING id',
+      values: newSongData.instanceToArray4ExistingEntry(),
+    };
 
-  //     const result = await this._pool.query(query);
+    const result = await this._pool.query(query);
 
-  //     if (!result.rows.length) {
-  //       throw new NotFoundError('Gagal memperbarui catatan. Id tidak ditemukan');
-  //     }
-  //   }
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui Lagu. Id tidak ditemukan');
+    }
+  }
 
   //   async deleteNoteById(id) {
   //     const query = {

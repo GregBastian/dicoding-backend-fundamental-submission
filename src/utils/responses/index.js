@@ -1,12 +1,13 @@
 const successResponse = (h, {
-  withMessage = false, responseMessage = '', responseData = {}, responseCode = 200,
+  withMessage = false, withData = false, responseMessage = '', responseData = {}, responseCode = 200,
 }) => {
   const response = {
     status: 'success',
-    data: responseData,
   };
   if (withMessage) {
     response.message = responseMessage;
+  } if (withData) {
+    response.data = responseData;
   }
   return h.response(response).code(responseCode);
 };
