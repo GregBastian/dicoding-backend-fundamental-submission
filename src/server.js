@@ -2,7 +2,8 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
-const { songHandler, errorHandlerPlugin } = require('./api/songs');
+const songHandler = require('./api/songs');
+const errorHandler = require('./api/errors');
 const CrudService = require('./services/postgres/crudService');
 const SongsValidator = require('./validator/songs');
 
@@ -27,7 +28,7 @@ const init = async () => {
   });
 
   await server.register({
-    plugin: errorHandlerPlugin,
+    plugin: errorHandler,
   });
 
   await server.start();
