@@ -1,5 +1,4 @@
-const ClientError = require('../../exceptions/ClientError');
-const { successResponse, failResponse, errorResponse } = require('../../utils/responses');
+const { successResponse } = require('../../utils/responses');
 
 class SongsHandler {
   constructor(service, validator) {
@@ -15,110 +14,64 @@ class SongsHandler {
   }
 
   async postSongHandler(request, h) {
-    try {
-      this._validator.validateSongPayload(request.payload);
+    this._validator.validateSongPayload(request.payload);
 
-      const newSongId = await this._service.addSong(request.payload);
+    const newSongId = await this._service.addSong(request.payload);
 
-      return successResponse(h, {
-        withMessage: true,
-        withData: true,
-        responseMessage: 'Lagu berhasil ditambahkan',
-        responseData: { songId: newSongId },
-        responseCode: 201,
-      });
-    } catch (error) {
-      if (error instanceof ClientError) {
-        return failResponse(h, error);
-      }
-
-      console.log(error);
-      return errorResponse(h);
-    }
+    return successResponse(h, {
+      withMessage: true,
+      withData: true,
+      responseMessage: 'Lagu berhasil ditambahkan',
+      responseData: { songId: newSongId },
+      responseCode: 201,
+    });
   }
 
   async getSongsHandler(request, h) {
-    try {
-      const retrievedSongs = await this._service.getSongs();
-      return successResponse(h, {
-        withData: true,
-        responseData: { songs: retrievedSongs },
-      });
-    } catch (error) {
-      console.log(error);
-      return errorResponse(h);
-    }
+    const retrievedSongs = await this._service.getSongs();
+    return successResponse(h, {
+      withData: true,
+      responseData: { songs: retrievedSongs },
+    });
   }
 
   async getSongByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      const retrievedSong = await this._service.getSongById(id);
-      return successResponse(h, {
-        withData: true,
-        responseData: { song: retrievedSong },
-      });
-    } catch (error) {
-      if (error instanceof ClientError) {
-        return failResponse(h, error);
-      }
-
-      console.log(error);
-      return errorResponse(h);
-    }
+    const { id } = request.params;
+    const retrievedSong = await this._service.getSongById(id);
+    return successResponse(h, {
+      withData: true,
+      responseData: { song: retrievedSong },
+    });
   }
 
   async putSongByIdHandler(request, h) {
-    try {
-      this._validator.validateSongPayload(request.payload);
-      const { id } = request.params;
+    this._validator.validateSongPayload(request.payload);
+    const { id } = request.params;
 
-      await this._service.editSongById(id, request.payload);
+    await this._service.editSongById(id, request.payload);
 
-      return successResponse(h, {
-        withMessage: true,
-        responseMessage: 'lagu berhasil diperbarui',
-      });
-    } catch (error) {
-      if (error instanceof ClientError) {
-        return failResponse(h, error);
-      }
-
-      console.log(error);
-      return errorResponse(h);
-    }
+    return successResponse(h, {
+      withMessage: true,
+      responseMessage: 'lagu berhasil diperbarui',
+    });
   }
 
   async deleteSongByIdHandler(request, h) {
-    try {
-      const { id } = request.params;
-      await this._service.deleteSongById(id);
+    const { id } = request.params;
+    await this._service.deleteSongById(id);
 
-      return successResponse(h, {
-        withMessage: true,
-        responseMessage: 'lagu berhasil dihapus',
-      });
-    } catch (error) {
-      if (error instanceof ClientError) {
-        return failResponse(h, error);
-      }
-
-      // Server ERROR!
-      return errorResponse(h);
-    }
+    return successResponse(h, {
+      withMessage: true,
+      responseMessage: 'lagu berhasil dihapus',
+    });
   }
 
   async truncateTableHandler(request, h) {
-    try {
-      await this._service.truncateTable();
-      return successResponse(h, {
-        withMessage: true,
-        responseMessage: 'Tabel berhasil di truncate',
-      });
-    } catch (error) {
-      console.log(error);
-      return errorResponse();
-    }
+    await this._service.truncateTable();
+    return successResponse(h, {
+      withMessage: true,
+      responseMessage: 'Tabel berhasil di truncate',
+    });
   }
 }
 
