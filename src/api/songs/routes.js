@@ -24,11 +24,6 @@ const routes = (handler) => [
     path: '/songs/{id}',
     handler: handler.deleteSongByIdHandler,
   },
-  {
-    method: 'PUT',
-    path: '/special/truncate',
-    handler: handler.truncateTableHandler,
-  },
 ];
 
 module.exports = routes;

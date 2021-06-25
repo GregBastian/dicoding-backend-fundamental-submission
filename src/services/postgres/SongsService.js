@@ -1,10 +1,10 @@
 const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const { mapDBToModel4SingleSong: MapDBToModel4singleSong } = require('../../utils/model');
-const SongModel = require('../../utils/model');
+const { mapDBToModel4SingleSong: MapDBToModel4singleSong } = require('../../utils/model/SongModel');
+const SongModel = require('../../utils/model/SongModel');
 
-class CrudService {
+class SongsService {
   constructor() {
     this._pool = new Pool();
   }
@@ -70,14 +70,6 @@ class CrudService {
       throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
     }
   }
-
-  async truncateTable() {
-    try {
-      await this._pool.query('TRUNCATE TABLE songs');
-    } catch (error) {
-      throw new Error('Terdapat kesalahan pada sistem');
-    }
-  }
 }
 
-module.exports = CrudService;
+module.exports = SongsService;

@@ -10,7 +10,6 @@ class SongsHandler {
     this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
     this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
     this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
-    this.truncateTableHandler = this.truncateTableHandler.bind(this);
   }
 
   async postSongHandler(request, h) {
@@ -19,8 +18,6 @@ class SongsHandler {
     const newSongId = await this._service.addSong(request.payload);
 
     return successResponse(h, {
-      withMessage: true,
-      withData: true,
       responseMessage: 'Lagu berhasil ditambahkan',
       responseData: { songId: newSongId },
       responseCode: 201,
@@ -30,7 +27,6 @@ class SongsHandler {
   async getSongsHandler(request, h) {
     const retrievedSongs = await this._service.getSongs();
     return successResponse(h, {
-      withData: true,
       responseData: { songs: retrievedSongs },
     });
   }
@@ -39,7 +35,6 @@ class SongsHandler {
     const { id } = request.params;
     const retrievedSong = await this._service.getSongById(id);
     return successResponse(h, {
-      withData: true,
       responseData: { song: retrievedSong },
     });
   }
@@ -51,7 +46,6 @@ class SongsHandler {
     await this._service.editSongById(id, request.payload);
 
     return successResponse(h, {
-      withMessage: true,
       responseMessage: 'lagu berhasil diperbarui',
     });
   }
@@ -61,16 +55,7 @@ class SongsHandler {
     await this._service.deleteSongById(id);
 
     return successResponse(h, {
-      withMessage: true,
       responseMessage: 'lagu berhasil dihapus',
-    });
-  }
-
-  async truncateTableHandler(request, h) {
-    await this._service.truncateTable();
-    return successResponse(h, {
-      withMessage: true,
-      responseMessage: 'Tabel berhasil di truncate',
     });
   }
 }
