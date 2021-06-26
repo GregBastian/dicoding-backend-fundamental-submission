@@ -11,8 +11,7 @@ class ErrorHandler {
       // membuat response baru dari response toolkit sesuai kebutuhan error handling
       return failResponse(h, response);
     } if (response instanceof Error) {
-      const { statusCode } = response.output;
-      const { payload } = response.output;
+      const { statusCode, payload } = response.output;
       if (statusCode === 404) {
         return h.response(payload).code(404);
       }

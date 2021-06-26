@@ -1,11 +1,23 @@
 const Joi = require('joi');
 
-const SongPayloadSchema = Joi.object({
+// Constants from .env
+const MIN_YEAR = parseInt(process.env.MIN_YEAR, 10);
+const MAX_YEAR = parseInt(process.env.MAX_YEAR, 10);
+
+const postSongPayloadSchema = Joi.object({
   title: Joi.string().required(),
-  year: Joi.number().min(1900).max(2021).required(),
+  year: Joi.number().min(MIN_YEAR).max(MAX_YEAR).required(),
   performer: Joi.string().required(),
   genre: Joi.string(),
   duration: Joi.number(),
 });
 
-module.exports = { SongPayloadSchema };
+const putSongPayloadSchema = Joi.object({
+  title: Joi.string().required(),
+  year: Joi.number().min(MIN_YEAR).max(MAX_YEAR).required(),
+  performer: Joi.string().required(),
+  genre: Joi.string(),
+  duration: Joi.number(),
+});
+
+module.exports = { postSongPayloadSchema, putSongPayloadSchema };

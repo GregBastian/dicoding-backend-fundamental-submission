@@ -4,21 +4,27 @@ require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 
 // error
-const errorHandler = require('./api/errors');
+const errors = require('./api/errors');
 
 // truncate
-const truncateHandler = require('./api/truncate');
+const truncates = require('./api/truncate');
 const TruncateService = require('./services/postgres/TruncateService');
 
 // songs
-const songHandler = require('./api/songs');
+const songs = require('./api/songs');
 const SongsService = require('./services/postgres/SongsService');
 const SongsValidator = require('./validator/songs');
 
 // users
-const userHandler = require('./api/users');
+const users = require('./api/users');
 const UsersService = require('./services/postgres/UsersService');
 const UsersValidator = require('./validator/users');
+
+// authentications
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./services/postgres/AuthenticationsService');
+const AuthenticationsValidator = require('./validator/authentications');
+const TokenManager = require('./api/tokenize/TokenManager');
 
 const init = async () => {
   const server = Hapi.server({
@@ -34,29 +40,39 @@ const init = async () => {
   const truncateService = new TruncateService();
   const songsService = new SongsService();
   const usersService = new UsersService();
+  const authenticationService = new AuthenticationsService();
 
   await server.register([
     {
-      plugin: truncateHandler,
+      plugin: truncates,
       options: {
         service: truncateService,
       },
     },
     {
-      plugin: errorHandler,
+      plugin: errors,
     },
     {
-      plugin: songHandler,
+      plugin: songs,
       options: {
         service: songsService,
         validator: SongsValidator,
       },
     },
     {
-      plugin: userHandler,
+      plugin: users,
       options: {
         service: usersService,
         validator: UsersValidator,
+      },
+    },
+    {
+      plugin: authentications,
+      options: {
+        authenticationService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
       },
     },
   ]);

@@ -13,7 +13,7 @@ class SongsHandler {
   }
 
   async postSongHandler(request, h) {
-    this._validator.validateSongPayload(request.payload);
+    this._validator.validatePostSongPayload(request.payload);
 
     const newSongId = await this._service.addSong(request.payload);
 
@@ -40,7 +40,7 @@ class SongsHandler {
   }
 
   async putSongByIdHandler(request, h) {
-    this._validator.validateSongPayload(request.payload);
+    this._validator.validatePutSongPayload(request.payload);
     const { id } = request.params;
 
     await this._service.editSongById(id, request.payload);
