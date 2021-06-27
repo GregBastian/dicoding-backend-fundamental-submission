@@ -1,3 +1,4 @@
+const autoBind = require('auto-bind');
 const { successResponse } = require('../../utils/responses');
 
 class UsersHandler {
@@ -5,7 +6,7 @@ class UsersHandler {
     this._service = service;
     this._validator = validator;
 
-    this.postUserHandler = this.postUserHandler.bind(this);
+    autoBind(this);
   }
 
   async postUserHandler(request, h) {

@@ -8,15 +8,20 @@ class ErrorHandler {
     const { response } = request;
 
     if (response instanceof ClientError) {
-      // membuat response baru dari response toolkit sesuai kebutuhan error handling
+      // kondisi ini digunakan untuk menangkap error yang sengaja di-throw
       return failResponse(h, response);
     } if (response instanceof Error) {
+      // kondisi ini digunakan untuk menangkap error yang tidak terduga
       const { statusCode, payload } = response.output;
-      if (statusCode === 404) {
-        return h.response(payload).code(404);
+      switch (statusCode) {
+        case 401:
+          return h.response(payload).code(401);
+        case 404:
+          return h.response(payload).code(404);
+        default:
+          console.log(response);
+          return errorResponse(h);
       }
-      console.log(response);
-      return errorResponse(h);
     }
     // jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi)
     return response.continue || response;

@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const { mapDBToModel4SingleSong: MapDBToModel4singleSong } = require('../../utils/model/SongModel');
+const { mapDBToModel4SingleSong } = require('../../utils/model/SongModel');
 const SongModel = require('../../utils/model/SongModel');
 
 class SongsService {
@@ -41,7 +41,7 @@ class SongsService {
       throw new NotFoundError('Lagu yang Anda cari tidak ditemukan');
     }
 
-    return result.rows.map(MapDBToModel4singleSong)[0];
+    return result.rows.map(mapDBToModel4SingleSong)[0];
   }
 
   async editSongById(id, payload) {

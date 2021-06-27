@@ -1,10 +1,11 @@
+const autoBind = require('auto-bind');
 const { successResponse } = require('../../utils/responses');
 
 class TruncateHandler {
   constructor(service) {
     this._service = service;
 
-    this.truncateAllTablesHandler = this.truncateAllTablesHandler.bind(this);
+    autoBind(this);
   }
 
   async truncateAllTablesHandler(request, h) {

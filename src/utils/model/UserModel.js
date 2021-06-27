@@ -1,11 +1,11 @@
 const { nanoid } = require('nanoid');
 
 class UserModel {
-  constructor(payload, hashedPassword) {
+  constructor(entry, hashedPassword) {
     this.id = `user-${nanoid(10)}`;
-    this.username = payload.username;
+    this.username = entry.username;
     this.password = hashedPassword;
-    this.fullname = payload.fullname;
+    this.fullname = entry.fullname;
   }
 
   static instance4ExistingEntry(id, entry) {

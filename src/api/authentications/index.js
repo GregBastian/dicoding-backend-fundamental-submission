@@ -2,7 +2,7 @@ const AuthenticationsHandler = require('./handler');
 const routes = require('./routes');
 
 module.exports = {
-  name: 'authentications',
+  name: 'API to get access and refresh tokens (JWT)',
   version: '1.0.0',
   register: async (server, {
     authenticationService,

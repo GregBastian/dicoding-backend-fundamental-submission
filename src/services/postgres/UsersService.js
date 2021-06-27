@@ -14,6 +14,7 @@ class UsersService {
 
   async addUser(payload) {
     await this.verifyNewUsername(payload);
+
     const hashedPassword = await bcrypt.hash(payload.password, SALT_ROUNDS);
     const newUser = new UserModel(payload, hashedPassword);
     const query = {
