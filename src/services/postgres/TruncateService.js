@@ -9,6 +9,9 @@ class TruncateService {
   async truncateTables(apiKey) {
     if (apiKey === process.env.TRUNCATE_KEY) {
       await this._pool.query('TRUNCATE TABLE songs');
+      await this._pool.query('TRUNCATE TABLE authentications');
+      await this._pool.query('TRUNCATE TABLE users CASCADE');
+      await this._pool.query('TRUNCATE TABLE playlists');
     } else {
       throw new AuthorizationError('API Key not valid!');
     }
