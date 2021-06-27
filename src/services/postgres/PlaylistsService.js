@@ -1,5 +1,7 @@
 const { Pool } = require('pg');
+const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
 const PlaylistModel = require('../../utils/model/PlaylistModel');
 
 class PlaylistServices {
@@ -34,6 +36,34 @@ class PlaylistServices {
     };
     const result = await this._pool.query(query);
     return result.rows;
+  }
+
+  async deletePlaylistByOwnerId({ playlistId, ownerId }) {
+    await this.verifyPlaylistOwner(playlistId, ownerId);
+
+    const query = {
+      text: 'DELETE FROM playlists WHERE owner = $1 RETURNING id',
+      values: [ownerId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Playlist gagal dihapus. Id tidak ditemukan');
+    }
+  }
+
+  async verifyPlaylistOwner(playlistId, ownerId) {
+    const query = {
+      text: 'SELECT owner FROM playlists WHERE id = $1',
+      values: [playlistId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rows[0].owner !== ownerId) {
+      throw new AuthorizationError('Playlist gagal dihapus. Anda bukan pemilik playlist ini');
+    }
   }
 }
 

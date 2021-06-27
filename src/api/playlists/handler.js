@@ -34,6 +34,16 @@ class PlaylistsHandler {
       responseData: { playlists: playlistsByOwnerId },
     });
   }
+
+  async deletePlaylistByIdHandler(request, h) {
+    const { id: ownerId } = request.auth.credentials;
+    const { playlistId } = request.params;
+    await this._playlistService.deletePlaylistByOwnerId({ playlistId, ownerId });
+
+    return successResponse(h, {
+      responseMessage: 'Playlist berhasil dihapus',
+    });
+  }
 }
 
 module.exports = PlaylistsHandler;
