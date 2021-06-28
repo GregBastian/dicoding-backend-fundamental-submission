@@ -40,7 +40,7 @@ class PlaylistsService {
   }
 
   async deletePlaylistByPlaylistId({ playlistId, userId }) {
-    await this.verifyPlaylistDeleteAccess(playlistId, userId);
+    await this.verifyPlaylistOwnerAccess(playlistId, userId);
     console.log(playlistId, userId);
     const query = {
       text: 'DELETE FROM playlists WHERE id = $1 RETURNING id',
@@ -54,8 +54,7 @@ class PlaylistsService {
     }
   }
 
-  async verifyPlaylistDeleteAccess(playlistId, userId) {
-
+  async verifyPlaylistOwnerAccess(playlistId, userId) {
     console.log(playlistId, userId);
     const query = {
       text: 'SELECT owner FROM playlists WHERE id = $1',
@@ -65,7 +64,7 @@ class PlaylistsService {
     const result = await this._pool.query(query);
 
     if (result.rows[0].owner !== userId) {
-      throw new AuthorizationError('Gagal menghapus playlist. Anda bukan pemilik playlist ini');
+      throw new AuthorizationError('Gagal melakukan operasi. Anda bukan pemilik playlist ini');
     }
   }
 

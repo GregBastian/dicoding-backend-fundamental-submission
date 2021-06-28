@@ -1,5 +1,4 @@
 const { Pool } = require('pg');
-const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
 const CollaborationModel = require('../../utils/model/CollaborationModel');
 
@@ -33,19 +32,6 @@ class CollaborationsService {
 
     if (!result.rows.length) {
       throw new InvariantError('Collaborator gagal dihapus');
-    }
-  }
-
-  async verifyPlaylistCollaborator(playlistId, userId) {
-    const query = {
-      text: 'SELECT COUNT(1) FROM songs WHERE playlist_id = $1 AND user_id = $2',
-      values: [playlistId, userId],
-    };
-
-    const result = await this._pool.query(query);
-
-    if (!result.rows.length) {
-      throw new AuthorizationError('Anda bukan collaborator playlist ini');
     }
   }
 }
