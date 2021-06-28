@@ -1,10 +1,8 @@
 const { Pool } = require('pg');
-// const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
-// const NotFoundError = require('../../exceptions/NotFoundError');
 const PlaylistSongModel = require('../../utils/model/PlaylistSongModel');
 
-class PlaylistSongServices {
+class PlaylistSongsService {
   constructor() {
     this._pool = new Pool();
   }
@@ -39,6 +37,19 @@ class PlaylistSongServices {
     }
     return result.rows;
   }
+
+  async deleteSongFromPlaylist(playlistId, songId) {
+    const query = {
+      text: 'DELETE FROM playlistsongs WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
+      values: [playlistId, songId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new InvariantError('Lagu gagal dihapus dari playlist. Id tidak ditemukan');
+    }
+  }
 }
 
-module.exports = PlaylistSongServices;
+module.exports = PlaylistSongsService;

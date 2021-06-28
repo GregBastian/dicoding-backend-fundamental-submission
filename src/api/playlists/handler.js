@@ -80,6 +80,21 @@ class PlaylistsHandler {
       },
     });
   }
+
+  async deleteSongsFromPlaylistHandler(request, h) {
+    this._validator.validatePostSongToPlaylistPayload(request.payload);
+
+    const { id: ownerId } = request.auth.credentials;
+    const { playlistId } = request.params;
+    const { songId } = request.payload;
+
+    await this._playlistsService.verifyPlaylistOwner(playlistId, ownerId);
+    await this._playlistSongsService.deleteSongFromPlaylist(playlistId, songId);
+
+    return successResponse(h, {
+      responseMessage: 'Lagu berhasil dihapus dari playlist',
+    });
+  }
 }
 
 module.exports = PlaylistsHandler;

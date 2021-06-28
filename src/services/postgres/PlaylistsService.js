@@ -4,7 +4,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const PlaylistModel = require('../../utils/model/PlaylistModel');
 
-class PlaylistServices {
+class PlaylistsService {
   constructor() {
     this._pool = new Pool();
   }
@@ -80,4 +80,4 @@ class PlaylistServices {
   }
 }
 
-module.exports = PlaylistServices;
+module.exports = PlaylistsService;
