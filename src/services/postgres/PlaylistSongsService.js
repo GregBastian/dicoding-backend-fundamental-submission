@@ -26,7 +26,8 @@ class PlaylistSongsService {
     }
   }
 
-  async getSongsFromPlaylistId(playlistId) {
+  async getSongsFromPlaylistId(playlistId, userId) {
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     const query = {
       text: `SELECT songs.id, songs.title, songs.performer
       FROM playlists
@@ -43,7 +44,10 @@ class PlaylistSongsService {
     return result.rows;
   }
 
-  async deleteSongFromPlaylist(playlistId, songId) {
+  async deleteSongFromPlaylist(playlistId, songId, userId) {
+    await this._playlistsService.verifyPlaylistIsExist(playlistId);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
+
     const query = {
       text: 'DELETE FROM playlistsongs WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
       values: [playlistId, songId],

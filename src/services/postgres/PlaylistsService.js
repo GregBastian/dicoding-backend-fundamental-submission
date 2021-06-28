@@ -39,12 +39,12 @@ class PlaylistsService {
     return result.rows;
   }
 
-  async deletePlaylistByUserId({ playlistId, userId }) {
-    await this.verifyPlaylistAccess(playlistId, userId);
-
+  async deletePlaylistByPlaylistId({ playlistId, userId }) {
+    await this.verifyPlaylistDeleteAccess(playlistId, userId);
+    console.log(playlistId, userId);
     const query = {
-      text: 'DELETE FROM playlists WHERE owner = $1 RETURNING id',
-      values: [userId],
+      text: 'DELETE FROM playlists WHERE id = $1 RETURNING id',
+      values: [playlistId],
     };
 
     const result = await this._pool.query(query);
@@ -54,22 +54,22 @@ class PlaylistsService {
     }
   }
 
-  // async verifyPlayListAccess(playlistId, userId) {
-  //   try {
-  //     await this.verifyPlayListAccess(playlistId, userId);
-  //   } catch (error) {
-  //     if (error instanceof AuthorizationError) {
-  //       try {
-  //         await this._collaborationsService.verifyPlaylistCollaborator(playlistId, userId);
-  //       } catch {
-  //         throw error;
-  //       }
-  //     }
-  //   }
-  // }
+  async verifyPlaylistDeleteAccess(playlistId, userId) {
+
+    console.log(playlistId, userId);
+    const query = {
+      text: 'SELECT owner FROM playlists WHERE id = $1',
+      values: [playlistId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rows[0].owner !== userId) {
+      throw new AuthorizationError('Gagal menghapus playlist. Anda bukan pemilik playlist ini');
+    }
+  }
 
   async verifyPlaylistAccess(playlistId, userId) {
-    console.log(userId, '<----1');
     const query = {
       text: `SELECT playlists.id
              FROM playlists
@@ -80,8 +80,6 @@ class PlaylistsService {
       values: [userId, playlistId],
     };
     const result = await this._pool.query(query);
-
-    console.log(result.rows, '<----2');
 
     if (!result.rows[0]) {
       throw new AuthorizationError('Anda bukan pemilik/collaborator playlist ini');
