@@ -55,10 +55,8 @@ class PlaylistsHandler {
     const { songId } = request.payload;
 
     await this._songsService.verifySongIsExist(songId);
-    await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
-    await this._playlistsService.verifyPlaylistIsExist(playlistId);
 
-    await this._playlistSongsService.addSongToPlaylist({ playlistId, songId });
+    await this._playlistSongsService.addSongToPlaylist({ playlistId, songId, userId });
 
     return successResponse(h, {
       responseMessage: 'Lagu berhasil ditambahkan ke playlist',
@@ -70,7 +68,7 @@ class PlaylistsHandler {
     const { id: userId } = request.auth.credentials;
     const { playlistId } = request.params;
 
-    await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     const songsFromPlaylist = await this._playlistSongsService.getSongsFromPlaylistId(playlistId);
 
     return successResponse(h, {
@@ -87,7 +85,7 @@ class PlaylistsHandler {
     const { playlistId } = request.params;
     const { songId } = request.payload;
 
-    await this._playlistsService.verifyPlaylistOwner(playlistId, userId);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     await this._playlistSongsService.deleteSongFromPlaylist(playlistId, songId);
 
     return successResponse(h, {

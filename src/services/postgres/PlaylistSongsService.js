@@ -3,12 +3,17 @@ const InvariantError = require('../../exceptions/InvariantError');
 const PlaylistSongModel = require('../../utils/model/PlaylistSongModel');
 
 class PlaylistSongsService {
-  constructor() {
+  constructor(playlistsService) {
     this._pool = new Pool();
+    this._playlistsService = playlistsService;
   }
 
   async addSongToPlaylist(payload) {
-    const newPlaylistSong = new PlaylistSongModel(payload);
+    const { playlistId, userId, songId } = payload;
+    await this._playlistsService.verifyPlaylistIsExist(playlistId);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
+
+    const newPlaylistSong = new PlaylistSongModel({ playlistId, userId, songId });
     const query = {
       text: 'INSERT INTO playlistsongs VALUES($1, $2, $3) RETURNING id',
       values: newPlaylistSong.instanceToArray(),
