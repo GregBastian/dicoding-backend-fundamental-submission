@@ -6,7 +6,6 @@ class ErrorHandler {
   errorHandler(request, h) {
     // mendapatkan konteks response dari request
     const { response } = request;
-
     if (response instanceof ClientError) {
       // kondisi ini digunakan untuk menangkap error yang sengaja di-throw
       return failResponse(h, response);

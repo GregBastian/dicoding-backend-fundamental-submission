@@ -30,6 +30,7 @@ const TokenManager = require('./tokenize/TokenManager');
 // playlists
 const playlists = require('./api/playlists');
 const PlaylistService = require('./services/postgres/PlaylistsService');
+const PlaylistSongService = require('./services/postgres/PlaylistSongsService');
 const PlaylistsValidator = require('./validator/playlists');
 
 const init = async () => {
@@ -47,7 +48,8 @@ const init = async () => {
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationService = new AuthenticationsService();
-  const playlistService = new PlaylistService();
+  const playlistsService = new PlaylistService();
+  const playlistSongsService = new PlaylistSongService();
 
   // plugin eksternal
   await server.register([
@@ -109,7 +111,9 @@ const init = async () => {
     {
       plugin: playlists,
       options: {
-        playlistService,
+        playlistsService,
+        playlistSongsService,
+        songsService,
         validator: PlaylistsValidator,
       },
     },

@@ -62,7 +62,20 @@ class PlaylistServices {
     const result = await this._pool.query(query);
 
     if (result.rows[0].owner !== ownerId) {
-      throw new AuthorizationError('Playlist gagal dihapus. Anda bukan pemilik playlist ini');
+      throw new AuthorizationError('Anda bukan pemilik playlist ini');
+    }
+  }
+
+  async verifyPlaylistIsExist(playlistId) {
+    const query = {
+      text: 'SELECT COUNT(1) FROM playlists WHERE id = $1',
+      values: [playlistId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result) {
+      throw new NotFoundError('Playlist yang dicari tidak ditemukan');
     }
   }
 }
