@@ -5,8 +5,9 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const PlaylistModel = require('../../utils/model/PlaylistModel');
 
 class PlaylistsService {
-  constructor() {
+  constructor(collaborationsService) {
     this._pool = new Pool();
+    this._collaborationsService = collaborationsService;
   }
 
   async addPlaylist(payload) {
@@ -24,26 +25,27 @@ class PlaylistsService {
     return result.rows[0].id;
   }
 
-  async getPlaylistsByOwnerId({ ownerId }) {
+  async getPlaylistsByUserId({ userId }) {
+    
     const query = {
       text: `SELECT playlists.id, playlists.name, users.username
              FROM playlists
-             INNER JOIN users
-             ON users.id = playlists.owner 
-             WHERE users.id = $1
-             `,
-      values: [ownerId],
+             INNER JOIN users ON playlists.owner = users.id  
+             LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
+             WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
+      values: [userId],
     };
     const result = await this._pool.query(query);
+
     return result.rows;
   }
 
-  async deletePlaylistByOwnerId({ playlistId, ownerId }) {
-    await this.verifyPlaylistOwner(playlistId, ownerId);
+  async deletePlaylistByUserId({ playlistId, userId }) {
+    await this.verifyPlaylistOwner(playlistId, userId);
 
     const query = {
       text: 'DELETE FROM playlists WHERE owner = $1 RETURNING id',
-      values: [ownerId],
+      values: [userId],
     };
 
     const result = await this._pool.query(query);
@@ -53,7 +55,21 @@ class PlaylistsService {
     }
   }
 
-  async verifyPlaylistOwner(playlistId, ownerId) {
+  async verifyPlayListAccess(playlistId, userId) {
+    try {
+      await this.verifyPlaylistOwner(playlistId, userId);
+    } catch (error) {
+      if (error instanceof AuthorizationError) {
+        try {
+          await this._collaborationsService.verifyPlaylistCollaborator(playlistId, userId);
+        } catch {
+          throw error;
+        }
+      }
+    }
+  }
+
+  async verifyPlaylistOwner(playlistId, userId) {
     const query = {
       text: 'SELECT owner FROM playlists WHERE id = $1',
       values: [playlistId],
@@ -61,7 +77,7 @@ class PlaylistsService {
 
     const result = await this._pool.query(query);
 
-    if (result.rows[0].owner !== ownerId) {
+    if (result.rows[0].owner !== userId) {
       throw new AuthorizationError('Anda bukan pemilik playlist ini');
     }
   }
