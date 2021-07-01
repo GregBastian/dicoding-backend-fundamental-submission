@@ -15,6 +15,10 @@ class TruncateHandler {
       responseMessage: 'Tabel-tabel berhasil di truncate',
     });
   }
+
+  async emptyFolder(request, h) {
+    return null;
+  }
 }
 
 module.exports = TruncateHandler;
