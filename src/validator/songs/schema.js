@@ -1,9 +1,8 @@
 const Joi = require('joi');
 
 // Constants from .env
-const today = new Date();
 const MIN_YEAR = parseInt(process.env.MIN_YEAR, 10);
-const MAX_YEAR = today.getFullYear();
+const MAX_YEAR = +new Date().getFullYear();
 
 const postSongPayloadSchema = Joi.object({
   title: Joi.string().required(),
