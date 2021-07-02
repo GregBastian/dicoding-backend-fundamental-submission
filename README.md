@@ -5,4 +5,6 @@ Repository ini dibuat agar semua orang yang tertarik untuk mencari referensi sub
 
 2) proyek-kedua: Seluruh kode yang dibutuhkan (kecuali .env) yang dibutuhkan agar bisa lolos submission kedua termasuk tabel migrations. Kode juga sudah dikembangkan dan diperbagus menurutut saran dari reviewer. Projek ini mendapatkan bintang 5.
 
-3) proyek ketiga: in progress
+3) proyek-ketiga: in progress
+
+https://drive.google.com/uc?export=download&id=1Nn4h3Cvvt3gP9nkTbTJ2UcrzngxNhMyA
