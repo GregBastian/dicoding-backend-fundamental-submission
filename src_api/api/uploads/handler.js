@@ -15,11 +15,11 @@ class UploadsHandler {
 
     const filename = await this._service.writeFile(data, data.hapi);
 
-    const fileLocation = `http://${process.env.HOST}:${process.env.PORT}/upload/pictures/${filename}`;
+    const pictureUrl = `http://${process.env.HOST}:${process.env.PORT}/upload/pictures/${filename}`;
 
     return successResponse(h, {
       responseData: {
-        fileLocation,
+        pictureUrl,
       },
       responseCode: 201,
     });

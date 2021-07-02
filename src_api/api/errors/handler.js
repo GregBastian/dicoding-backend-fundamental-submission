@@ -17,6 +17,8 @@ class ErrorHandler {
           return h.response(payload).code(401);
         case 404:
           return h.response(payload).code(404);
+        case 413:
+          return h.response(payload).code(413);
         default:
           console.log(response);
           return errorResponse(h);
