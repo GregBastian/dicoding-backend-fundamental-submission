@@ -3,9 +3,10 @@ const InvariantError = require('../../exceptions/InvariantError');
 const PlaylistSongModel = require('../../utils/model/PlaylistSongModel');
 
 class PlaylistSongsService {
-  constructor(playlistsService) {
+  constructor(playlistsService, cacheService) {
     this._pool = new Pool();
     this._playlistsService = playlistsService;
+    this._cacheService = cacheService;
   }
 
   async addSongToPlaylist(payload) {
@@ -24,9 +25,16 @@ class PlaylistSongsService {
     if (!result.rows.length) {
       throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
+
+    this._cacheService.delete(`playlistSongs:${userId}`);
   }
 
   async getSongsFromPlaylistId(playlistId, userId) {
+    const resultCache = await this._cacheService.get(`playlistSongs:${userId}`);
+    if (resultCache) {
+      return resultCache;
+    }
+
     await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     const query = {
       text: `SELECT songs.id, songs.title, songs.performer
@@ -41,6 +49,8 @@ class PlaylistSongsService {
     if (!result.rows) {
       throw new InvariantError('Gagal mengambil lagu-lagu dari playlist');
     }
+
+    await this._cacheService.set(`playlistSongs:${userId}`, JSON.stringify(result));
     return result.rows;
   }
 
@@ -58,6 +68,8 @@ class PlaylistSongsService {
     if (!result.rows.length) {
       throw new InvariantError('Lagu gagal dihapus dari playlist. Id tidak ditemukan');
     }
+
+    this._cacheService.delete(`playlistSongs:${userId}`);
   }
 }
 

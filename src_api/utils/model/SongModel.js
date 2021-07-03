@@ -14,6 +14,10 @@ class SongModel {
     this.updatedAt = currentTime;
   }
 
+  getId() {
+    return this.id;
+  }
+
   static instance4ExistingEntry(id, entry) {
     const existingModel = new SongModel(entry);
     existingModel.id = id;

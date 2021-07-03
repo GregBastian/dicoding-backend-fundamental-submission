@@ -1,5 +1,3 @@
-const path = require('path');
-
 const routes = (handler) => [
   {
     method: 'POST',
@@ -16,12 +14,8 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/upload/pictures/{param*}',
-    handler: {
-      directory: {
-        path: path.resolve(__dirname, 'file'),
-      },
-    },
+    path: '/upload/pictures/{filename}',
+    handler: handler.getUploadImageHandler,
   },
 ];
 

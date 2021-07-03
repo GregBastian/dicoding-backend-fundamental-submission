@@ -7,9 +7,15 @@ class PlaylistSongsService {
     this._playlistsService = playlistsService;
   }
 
-  async getSongsFromPlaylistId(playlistId) {
+  async getSongsFromPlaylistId(playlistId, userId) {
+    const resultCache = await this._cacheService.get(`playlistSongs:${userId}`);
+    if (resultCache) {
+      return resultCache;
+    }
+
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     const query = {
-      text: `SELECT songs.*
+      text: `SELECT songs.id, songs.title, songs.performer
       FROM playlists
       INNER JOIN playlistsongs ON playlistsongs.playlist_id = playlists.id
       INNER JOIN songs ON songs.id = playlistsongs.song_id
@@ -21,6 +27,8 @@ class PlaylistSongsService {
     if (!result.rows) {
       throw new InvariantError('Gagal mengambil lagu-lagu dari playlist');
     }
+
+    await this._cacheService.set(`playlistSongs:${userId}`, JSON.stringify(result));
     return result.rows;
   }
 }

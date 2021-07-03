@@ -5,9 +5,9 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const PlaylistModel = require('../../utils/model/PlaylistModel');
 
 class PlaylistsService {
-  constructor(collaborationsService) {
+  constructor(cacheService) {
     this._pool = new Pool();
-    this._collaborationsService = collaborationsService;
+    this._cacheService = cacheService;
   }
 
   async addPlaylist(payload) {
@@ -22,10 +22,17 @@ class PlaylistsService {
     if (!result.rows.length) {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
+
+    this._cacheService.delete(`playlists:${newPlaylist.getOwner()}`);
     return result.rows[0].id;
   }
 
   async getPlaylistsByUserId({ userId }) {
+    const resultCache = await this._cacheService.get(`playlists:${userId}`);
+    if (resultCache) {
+      return resultCache;
+    }
+
     const query = {
       text: `SELECT playlists.id, playlists.name, users.username
              FROM playlists
@@ -36,6 +43,7 @@ class PlaylistsService {
     };
     const result = await this._pool.query(query);
 
+    await this._cacheService.set(`playlists:${userId}`, JSON.stringify(result));
     return result.rows;
   }
 
@@ -51,6 +59,8 @@ class PlaylistsService {
     if (!result.rows.length) {
       throw new NotFoundError('Playlist gagal dihapus. Id tidak ditemukan');
     }
+
+    this._cacheService.delete(`playlists:${userId}`);
   }
 
   async verifyPlaylistOwnerAccess(playlistId, userId) {

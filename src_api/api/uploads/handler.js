@@ -1,4 +1,5 @@
 const autoBind = require('auto-bind');
+const path = require('path');
 const { successResponse } = require('../../utils/responses');
 
 class UploadsHandler {
@@ -23,6 +24,13 @@ class UploadsHandler {
       },
       responseCode: 201,
     });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async getUploadImageHandler(request, h) {
+    const { filename } = request.params;
+    const filepath = path.resolve(__dirname, '../../uploads/file/pictures', filename);
+    return h.file(filepath);
   }
 }
 
