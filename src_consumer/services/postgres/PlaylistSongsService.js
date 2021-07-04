@@ -2,18 +2,17 @@ const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class PlaylistSongsService {
-  constructor(playlistsService) {
+  constructor(cacheService) {
     this._pool = new Pool();
-    this._playlistsService = playlistsService;
+    this._cacheService = cacheService;
   }
 
   async getSongsFromPlaylistId(playlistId, userId) {
-    const resultCache = await this._cacheService.get(`playlistSongs:${userId}`);
+    const resultCache = await this._cacheService.get(`playlistSongs-consumer:${userId}`);
     if (resultCache) {
       return resultCache;
     }
 
-    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     const query = {
       text: `SELECT songs.id, songs.title, songs.performer
       FROM playlists
@@ -28,7 +27,7 @@ class PlaylistSongsService {
       throw new InvariantError('Gagal mengambil lagu-lagu dari playlist');
     }
 
-    await this._cacheService.set(`playlistSongs:${userId}`, JSON.stringify(result));
+    await this._cacheService.set(`playlistSongs-consumer:${userId}`, JSON.stringify(result));
     return result.rows;
   }
 }

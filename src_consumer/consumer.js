@@ -4,10 +4,12 @@ const PlaylistService = require('./services/postgres/PlaylistService');
 const PlaylistSongsService = require('./services/postgres/PlaylistSongsService');
 const MailSender = require('./services/mailSender/MailSender');
 const Listener = require('./services/listener/listener');
+const CacheService = require('../src_api/services/cache/CacheService');
 
 const init = async () => {
-  const playlistsService = new PlaylistService();
-  const playlistSongsService = new PlaylistSongsService(playlistsService);
+  const cacheService = new CacheService();
+  const playlistsService = new PlaylistService(cacheService);
+  const playlistSongsService = new PlaylistSongsService(cacheService);
   const mailSender = new MailSender();
   const listener = new Listener(playlistsService, playlistSongsService, mailSender);
 

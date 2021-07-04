@@ -1,30 +1,17 @@
 const { Pool } = require('pg');
-const AuthorizationError = require('../../exceptions/AuthorizationError');
 const InvariantError = require('../../exceptions/InvariantError');
 
 class PlaylistService {
-  constructor() {
+  constructor(cacheService) {
     this._pool = new Pool();
-  }
-
-  async verifyPlaylistAccess(playlistId, userId) {
-    const query = {
-      text: `SELECT playlists.id
-             FROM playlists
-             INNER JOIN users ON playlists.owner = users.id  
-             LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
-             WHERE (playlists.owner = $1 OR collaborations.user_id = $1) AND 
-             playlists.id = $2`,
-      values: [userId, playlistId],
-    };
-    const result = await this._pool.query(query);
-
-    if (!result.rows[0]) {
-      throw new AuthorizationError('Anda bukan pemilik/collaborator playlist ini');
-    }
+    this._cacheService = cacheService;
   }
 
   async getPlaylistName(playlistId) {
+    const resultCache = await this._cacheService.get(`playlistName-consumer:${playlistId}`);
+    if (resultCache) {
+      return resultCache;
+    }
     const query = {
       text: 'SELECT name FROM playlists WHERE id = $1',
       values: [playlistId],
@@ -35,6 +22,7 @@ class PlaylistService {
       throw new InvariantError('Gagal mengambil nama playlist');
     }
 
+    await this._cacheService.set(`playlistName-consumer:${playlistId}`, JSON.stringify(result));
     return result.rows[0].name;
   }
 }
