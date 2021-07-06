@@ -31,7 +31,6 @@ class PlaylistsService {
     if (resultCache) {
       return resultCache;
     }
-
     const query = {
       text: `SELECT playlists.id, playlists.name, users.username
              FROM playlists

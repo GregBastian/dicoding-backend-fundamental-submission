@@ -70,7 +70,7 @@ const init = async () => {
   const authenticationService = new AuthenticationsService();
   const playlistsService = new PlaylistsService(cacheService);
   const playlistSongsService = new PlaylistSongsService(playlistsService, cacheService);
-  const collaborationsService = new CollaborationsService();
+  const collaborationsService = new CollaborationsService(cacheService);
   const storageService = new StorageService(path.resolve(__dirname, 'uploads/file/pictures'));
 
   // plugin eksternal
