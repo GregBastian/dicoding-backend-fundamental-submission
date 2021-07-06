@@ -26,16 +26,15 @@ class PlaylistSongsService {
       throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
 
-    this._cacheService.delete(`playlistSongs:${userId}`);
+    this._cacheService.delete(`playlistSongs:${playlistId}`);
   }
 
   async getSongsFromPlaylistId(playlistId, userId) {
-    const resultCache = await this._cacheService.get(`playlistSongs:${userId}`);
+    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
+    const resultCache = await this._cacheService.get(`playlistSongs:${playlistId}`);
     if (resultCache) {
       return resultCache;
     }
-
-    await this._playlistsService.verifyPlaylistAccess(playlistId, userId);
     const query = {
       text: `SELECT songs.id, songs.title, songs.performer
       FROM playlists
@@ -50,7 +49,7 @@ class PlaylistSongsService {
       throw new InvariantError('Gagal mengambil lagu-lagu dari playlist');
     }
 
-    await this._cacheService.set(`playlistSongs:${userId}`, JSON.stringify(result));
+    await this._cacheService.set(`playlistSongs:${playlistId}`, JSON.stringify(result.rows));
     return result.rows;
   }
 

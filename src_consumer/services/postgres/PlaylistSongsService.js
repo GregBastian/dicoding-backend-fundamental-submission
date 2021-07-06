@@ -7,8 +7,8 @@ class PlaylistSongsService {
     this._cacheService = cacheService;
   }
 
-  async getSongsFromPlaylistId(playlistId, userId) {
-    const resultCache = await this._cacheService.get(`playlistSongs-consumer:${userId}`);
+  async getSongsFromPlaylistId(playlistId) {
+    const resultCache = await this._cacheService.get(`playlistSongs-consumer:${playlistId}`);
     if (resultCache) {
       return resultCache;
     }
@@ -27,7 +27,7 @@ class PlaylistSongsService {
       throw new InvariantError('Gagal mengambil lagu-lagu dari playlist');
     }
 
-    await this._cacheService.set(`playlistSongs-consumer:${userId}`, JSON.stringify(result));
+    await this._cacheService.set(`playlistSongs-consumer:${playlistId}`, JSON.stringify(result));
     return result.rows;
   }
 }

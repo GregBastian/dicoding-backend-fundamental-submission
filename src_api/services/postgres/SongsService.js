@@ -23,17 +23,16 @@ class SongsService {
       throw new InvariantError('Lagu gagal ditambahkan');
     }
 
-    this._cacheService.delete(`songs:${newSong.getId()}`);
     return result.rows[0].id;
   }
 
   async getSongs() {
-    const resultCache = await this._cacheService.get('song:all-songs');
+    const resultCache = await this._cacheService.get('songs:all-songs');
     if (resultCache) {
       return resultCache;
     }
     const result = await this._pool.query('SELECT id, title, performer FROM songs');
-    await this._cacheService.set('songs:all-songs', JSON.stringify(result));
+    await this._cacheService.set('songs:all-songs', JSON.stringify(result.rows));
     return result.rows;
   }
 
@@ -52,7 +51,7 @@ class SongsService {
       throw new NotFoundError('Lagu yang Anda cari tidak ditemukan');
     }
 
-    await this._cacheService.set(`songs:${id}`, JSON.stringify(result));
+    await this._cacheService.set(`songs:${id}`, JSON.stringify(result.rows.map(mapDBToModel4SingleSong)[0]));
     return result.rows.map(mapDBToModel4SingleSong)[0];
   }
 
