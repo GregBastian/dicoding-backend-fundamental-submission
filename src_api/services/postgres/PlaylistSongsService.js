@@ -68,7 +68,7 @@ class PlaylistSongsService {
       throw new InvariantError('Lagu gagal dihapus dari playlist. Id tidak ditemukan');
     }
 
-    this._cacheService.delete(`playlistSongs:${userId}`);
+    this._cacheService.delete(`playlistSongs:${playlistId}`);
   }
 }
 

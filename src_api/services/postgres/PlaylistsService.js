@@ -23,6 +23,7 @@ class PlaylistsService {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
 
+    this._cacheService.delete(`playlists:${newPlaylist.getOwner()}`);
     return result.rows[0].id;
   }
 
