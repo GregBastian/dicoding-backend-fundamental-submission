@@ -5,7 +5,7 @@ Repository ini dibuat agar semua orang yang tertarik untuk mencari referensi sub
 
 2) proyek-kedua: Seluruh kode yang dibutuhkan (kecuali .env) yang dibutuhkan agar bisa lolos submission kedua termasuk tabel migrations. Kode juga sudah dikembangkan dan diperbagus menurutut saran dari reviewer. Projek ini mendapatkan bintang 5.
 
-3) proyek-ketiga: Seluruh kode yang dibutuhkan (kecuali .env) yang dibutuhkan agar bisa lolos submission ketiga termasuk tabel migrations dan soruce code consumer dari message broker.
+3) proyek-ketiga: Seluruh kode yang dibutuhkan (kecuali .env) yang dibutuhkan agar bisa lolos submission ketiga termasuk tabel migrations dan soruce code consumer dari message broker. Projek ini mendapatkan bintang 5.
 
 catatan: 
 
