@@ -7,6 +7,10 @@ class PlaylistModel {
     this.owner = entry.owner;
   }
 
+  getOwner() {
+    return this.owner;
+  }
+
   static instance4ExistingEntry(id, entry) {
     const existingModel = new PlaylistModel(entry);
     existingModel.id = id;

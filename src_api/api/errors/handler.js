@@ -11,15 +11,14 @@ class ErrorHandler {
       return failResponse(h, response);
     } if (response instanceof Error) {
       // kondisi ini digunakan untuk menangkap error yang tidak terduga
+      // alias yang tidak dibangkitkan secara manual via 'throw new'
       const { statusCode, payload } = response.output;
       switch (statusCode) {
-        case 401:
-          return h.response(payload).code(401);
-        case 404:
-          return h.response(payload).code(404);
-        default:
+        case 500:
           console.log(response);
           return errorResponse(h);
+        default:
+          return h.response(payload).code(statusCode);
       }
     }
     // jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi)

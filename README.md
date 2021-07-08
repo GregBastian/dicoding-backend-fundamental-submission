@@ -5,4 +5,10 @@ Repository ini dibuat agar semua orang yang tertarik untuk mencari referensi sub
 
 2) proyek-kedua: Seluruh kode yang dibutuhkan (kecuali .env) yang dibutuhkan agar bisa lolos submission kedua termasuk tabel migrations. Kode juga sudah dikembangkan dan diperbagus menurutut saran dari reviewer. Projek ini mendapatkan bintang 5.
 
-3) proyek ketiga: in progress
+3) proyek-ketiga: Seluruh kode yang dibutuhkan (kecuali .env) yang dibutuhkan agar bisa lolos submission ketiga termasuk tabel migrations dan soruce code consumer dari message broker. Projek ini mendapatkan bintang 5.
+
+catatan: 
+
+untuk mendapatkan format file .env agar program ini dapat dijalankan, silahkan unduh via pranala berikut https://bit.ly/env-format. 
+
+Ketika sudah diunduh silahkan masukkan di folder projek dan ubah namanya ke .env. Jangan lupa untuk mengisi nilai-nilai pada .env dengan nilai ingin kamu tentukan.

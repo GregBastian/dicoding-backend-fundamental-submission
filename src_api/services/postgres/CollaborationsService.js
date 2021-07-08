@@ -3,8 +3,9 @@ const InvariantError = require('../../exceptions/InvariantError');
 const CollaborationModel = require('../../utils/model/CollaborationModel');
 
 class CollaborationsService {
-  constructor() {
+  constructor(cacheService) {
     this._pool = new Pool();
+    this._cacheService = cacheService;
   }
 
   async addCollaboration(payload) {
@@ -33,6 +34,8 @@ class CollaborationsService {
     if (!result.rows.length) {
       throw new InvariantError('Collaborator gagal dihapus');
     }
+
+    this._cacheService.delete(`playlists:${userId}`);
   }
 }
 

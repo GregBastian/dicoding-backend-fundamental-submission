@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start-prod": "NODE_ENV=production node ./src/server.js",
-    "start-dev": "nodemon ./src/server.js",
-    "lint": "eslint ./src --fix && eslint ./migrations --fix",
+    "start-prod": "NODE_ENV=production node ./src_api/server.js",
+    "start-dev-api": "nodemon ./src_api/server.js",
+    "start-dev-consumer": "node ./src_consumer/consumer.js",
+    "lint": "eslint ./src_api --fix && eslint ./src_consumer --fix && eslint ./migrations --fix",
     "migrate": "node-pg-migrate"
   },
   "keywords": [],
@@ -16,17 +17,21 @@
     "eslint": "^7.21.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.9"
   },
   "dependencies": {
     "@hapi/hapi": "^20.1.0",
+    "@hapi/inert": "^6.0.3",
     "@hapi/jwt": "^2.0.1",
+    "amqplib": "^0.8.0",
     "auto-bind": "^4.0.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "joi": "^17.4.0",
     "nanoid": "^3.1.20",
     "node-pg-migrate": "^5.9.0",
-    "pg": "^8.6.0"
+    "nodemailer": "^6.6.2",
+    "pg": "^8.6.0",
+    "redis": "^3.1.2"
   }
 }

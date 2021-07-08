@@ -11,10 +11,17 @@ class TruncateHandler {
   async truncateAllTablesHandler(request, h) {
     const apiKey = request.headers['x-api-key'];
     await this._service.truncateTables(apiKey);
+
+    // TODO: empty folder
+
     return successResponse(h, {
       responseMessage: 'Tabel-tabel berhasil di truncate',
     });
   }
+
+  // async emptyFolder(request, h) {
+  //   return null;
+  // }
 }
 
 module.exports = TruncateHandler;
